@@ -155,7 +155,7 @@ bool Sokit::initUI()
 	BaseForm* client = new ClientForm();
 	NotepadForm* npd = new NotepadForm();
 
-	QTabWidget* tab = new QTabWidget(pnl);
+	QTabWidget* tab = new QTabWidget(pnl);//QTabWidget主要是用来分页显示的
 	tab->addTab(server, server->windowTitle());
 	tab->addTab(transf, transf->windowTitle());
 	tab->addTab(client, client->windowTitle());
