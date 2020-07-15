@@ -151,7 +151,7 @@ bool Sokit::initUI()
 	m_wnd.setCentralWidget(pnl);
 	/**
 	 * 四个主要功能的初始化
-	 * 服务端 传输层 客户端 日志 
+	 * 服务器 转发器 客户端 记事板 
 	*/
 	BaseForm* server = new ServerForm();
 	BaseForm* transf = new TransferForm();
