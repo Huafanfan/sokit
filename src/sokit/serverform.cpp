@@ -75,12 +75,13 @@ bool ServerForm::initForm()
 {
 	initCounter(m_ui.labRecv, m_ui.labSend);
 	initLogger(m_ui.chkLog, m_ui.btnClear, m_ui.treeOutput, m_ui.txtOutput);
-	initLister(m_ui.btnConnAll, m_ui.btnConnDel, m_ui.lstConn);
+	initLister(m_ui.btnConnAll, m_ui.btnConnDel, m_ui.lstConn);//初始化快捷键监听器
 
 	bindBuffer(1, m_ui.edtBuf1, m_ui.btnSend1, 0);
 	bindBuffer(2, m_ui.edtBuf2, m_ui.btnSend2, 0);
 	bindBuffer(3, m_ui.edtBuf3, m_ui.btnSend3, 0);
 
+	//绑定Tcp和Udp按钮的触发器
 	connect(m_ui.btnTcp, SIGNAL(clicked(bool)), this, SLOT(trigger(bool)));
 	connect(m_ui.btnUdp, SIGNAL(clicked(bool)), this, SLOT(trigger(bool)));
 
@@ -126,22 +127,23 @@ void ServerForm::kill(QStringList& list)
 
 void ServerForm::trigger(bool start)
 {
-	QToolButton* btnTrigger = qobject_cast<QToolButton*>(sender());
+	QToolButton* btnTrigger = qobject_cast<QToolButton*>(sender());//这里的sender就是之前绑定的m_ui的btn，强转btn来判断点击了哪个btn
 	if (!btnTrigger) return;
 
 	bool istcp = (btnTrigger==m_ui.btnTcp);
-	QComboBox* cbAddr = istcp ? m_ui.cmbTcpAddr : m_ui.cmbUdpAddr;
+	QComboBox* cbAddr = istcp ? m_ui.cmbTcpAddr : m_ui.cmbUdpAddr;//tcp就赋值为tcp的地址，端口，upd相同
 	QComboBox* cbPort = istcp ?	m_ui.cmbTcpPort : m_ui.cmbUdpPort;
-	ServerSkt* server = istcp ? (ServerSkt*)&m_tcp : (ServerSkt*)&m_udp;
+	ServerSkt* server = istcp ? (ServerSkt*)&m_tcp : (ServerSkt*)&m_udp;//判断初始化哪个server
 
 	IPAddr addr;
 	if (start)
-		start = TK::popIPAddr(cbAddr, cbPort, addr);
+		start = TK::popIPAddr(cbAddr, cbPort, addr);//toolkit类方法都为静态方法，可以直接调用
+													//start来判断ip和端口是否绑定成功
 
-	lock();
+	lock();//加锁
 
 	if (start)
-		start = server->start(addr.ip, addr.port);
+		start = server->start(addr.ip, addr.port);//调用ServerSkt的start方法
 	else
 		server->stop();
 		

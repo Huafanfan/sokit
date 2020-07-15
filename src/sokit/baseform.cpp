@@ -27,6 +27,7 @@ BaseForm::~BaseForm()
 
 bool BaseForm::init()
 {
+	//首先初始化格式和热键
 	if (!initForm() || !initHotkeys())
 		return false;
 

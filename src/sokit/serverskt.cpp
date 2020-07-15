@@ -23,9 +23,9 @@ bool ServerSkt::start(const QHostAddress& ip, quint16 port)
 	m_port = port;
 
 	m_conns.clear();
-	m_error.clear();
+	m_error.clear();//清空
 
-	m_started = open();
+	m_started = open();//tcp调用tcp的方法，udp调用udp的方法
 
 	QString msg("start %1 server %2!");
 	if (!m_started)
@@ -167,7 +167,7 @@ ServerSktTcp::~ServerSktTcp()
 
 bool ServerSktTcp::open()
 {
-	if (m_server.listen(addr(), port()))
+	if (m_server.listen(addr(), port()))//开始监听ip和端口
 	{
 		connect(&m_server, SIGNAL(newConnection()), this, SLOT(newConnection()));
 		return true;
@@ -219,10 +219,10 @@ void ServerSktTcp::close()
 
 void ServerSktTcp::newConnection()
 {
-	QTcpServer* server = qobject_cast<QTcpServer*>(sender());
+	QTcpServer* server = qobject_cast<QTcpServer*>(sender());//服务端
 	if (!server) return;
 
-	QTcpSocket* client = server->nextPendingConnection();
+	QTcpSocket* client = server->nextPendingConnection();//获取到连接到服务端的客户端
 	while (client)
 	{
 		Conn* conn = new Conn;
@@ -235,16 +235,16 @@ void ServerSktTcp::newConnection()
 			client->setProperty(PROP_CONN, qVariantFromValue((void*)conn));
 
 			conn->client = client;
-			conn->key = TK::ipstr(client->peerAddress(),client->peerPort(), true);
+			conn->key = TK::ipstr(client->peerAddress(),client->peerPort(), true);//key的值为发起方ip+端口
 
-			connect(client, SIGNAL(readyRead()), this, SLOT(newData()));
-			connect(client, SIGNAL(destroyed(QObject*)), this, SLOT(close(QObject*)));
-			connect(client, SIGNAL(disconnected()), client, SLOT(deleteLater()));
-			connect(client, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(error()));
+			connect(client, SIGNAL(readyRead()), this, SLOT(newData()));//绑定客户端的功能，如果客户端发来准备好读，触发newData
+			connect(client, SIGNAL(destroyed(QObject*)), this, SLOT(close(QObject*)));//绑定删除
+			connect(client, SIGNAL(disconnected()), client, SLOT(deleteLater()));//断开连接
+			connect(client, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(error()));//报错
 
-			setCookie(conn->key, conn);
+			setCookie(conn->key, conn);//设置cookie
 		}
-		client = server->nextPendingConnection();
+		client = server->nextPendingConnection();//再获取一次客户端，进行循环
 	}
 }
 
@@ -256,8 +256,8 @@ void ServerSktTcp::newData()
 	Conn* conn = (Conn*)client->property(PROP_CONN).value<void*>();
 	if (!conn) return;
 
-	qint64 bufLen = client->bytesAvailable();
-	char* buf = TK::createBuffer(bufLen, MAXBUFFER);
+	qint64 bufLen = client->bytesAvailable();//可读的字节数
+	char* buf = TK::createBuffer(bufLen, MAXBUFFER);//读缓存
 	if (!buf) return;
 
 	qint64 readLen = 0;

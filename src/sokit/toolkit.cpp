@@ -62,12 +62,12 @@ QString TK::ipstr(const QHostAddress& addr, quint16 port, bool tcp)
 
 bool TK::popIPAddr(QComboBox* ip, QComboBox* port, IPAddr& addr)
 {
-	QString sip = ip->currentText().trimmed();
-	QString spt = port->currentText().trimmed();
+	QString sip = ip->currentText().trimmed();//获得ip。去掉前后的空格
+	QString spt = port->currentText().trimmed();//获得端口。去掉前后的空格
 
 	bool res = false;
-	addr.port = spt.toUShort(&res, 10);
-	return (res && addr.ip.setAddress(sip));
+	addr.port = spt.toUShort(&res, 10);//转换为短整型
+	return (res && addr.ip.setAddress(sip));//如果端口和ip设置成功，就返回true
 }
 
 void TK::pushIPAddr(QComboBox* ip, QComboBox* port)

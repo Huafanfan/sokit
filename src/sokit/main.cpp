@@ -134,8 +134,8 @@ void Sokit::initFont()
 
 bool Sokit::initUI()
 {
-	initTranslator();
-	initFont();
+	initTranslator();//翻译 不重要
+	initFont();//字体 不重要
 
 	HelpForm* h = new HelpForm(&m_wnd, Qt::WindowCloseButtonHint);
 
@@ -149,7 +149,10 @@ bool Sokit::initUI()
 
 	QWidget* pnl = new QWidget(&m_wnd);
 	m_wnd.setCentralWidget(pnl);
-
+	/**
+	 * 四个主要功能的初始化
+	 * 服务端 传输层 客户端 日志 
+	*/
 	BaseForm* server = new ServerForm();
 	BaseForm* transf = new TransferForm();
 	BaseForm* client = new ClientForm();
@@ -162,11 +165,11 @@ bool Sokit::initUI()
 	tab->addTab(npd, npd->windowTitle());
 	tab->setCurrentIndex(0);
 
-	QLayout* lay = new QVBoxLayout(pnl);
+	QLayout* lay = new QVBoxLayout(pnl);//这里为布局
 	lay->setSpacing(5);
 	lay->setContentsMargins(5, 5, 5, 5);
 	lay->addWidget(tab);
-
+	//四部分的初始化
 	return server->init() && transf->init() &&
 		client->init() && npd->init();
 }
@@ -187,7 +190,7 @@ int main(int argc, char *argv[])
 {
 	Sokit a(argc, argv);
 
-	if (a.initUI())
+	if (a.initUI())//初始化UI
 		a.show();
 	else
 		a.close();
